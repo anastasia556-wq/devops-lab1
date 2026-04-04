@@ -21,7 +21,7 @@ jobs:
         run: pytest
 
   deploy:
-    [cite_start]needs: build # Запускається лише після успішного виконання тестів [cite: 10]
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,4 +37,3 @@ jobs:
       - name: Deploy via SSH
         run: |
           echo "Connecting to ${{ secrets.HOST }} as ${{ secrets.USERNAME }}..."
-          # Тут зазвичай виконується ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} [cite: 58]
