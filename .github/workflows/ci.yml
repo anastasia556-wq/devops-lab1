@@ -2,10 +2,10 @@ name: Python CI/CD
 
 on:
   push:
-    [cite_start]branches: [main] # Запускається при push до гілки main [cite: 21]
+    branches: [main]
 
 jobs:
-  build: # Етап тестування (CI з 1-ї лаби)
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -20,22 +20,19 @@ jobs:
       - name: Run tests
         run: pytest
 
-  [cite_start]deploy: # Новий етап розгортання (CD для 2-ї лаби) [cite: 37, 72]
-    [cite_start]needs: build # Запускається лише після успішного виконання тестів 
-    [cite_start]runs-on: ubuntu-latest # [cite: 74]
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        [cite_start]uses: actions/checkout@v3 # [cite: 76, 77]
+      - uses: actions/checkout@v3
       
       - name: Setup SSH
         run: |
-          mkdir -p ~/.ssh # [cite: 80]
-          echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa # Використовуємо твій секрет KEY [cite: 81]
-          chmod 600 ~/.ssh/id_rsa # [cite: 82]
-          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts # Використовуємо HOST [cite: 83]
+          mkdir -p ~/.ssh
+          echo "${{ secrets.KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
       - name: Deploy via SSH
         run: |
           echo "Connecting to ${{ secrets.HOST }} as ${{ secrets.USERNAME }}..."
-          # Тут виконується команда розгортання на сервері [cite: 41, 84]
-          # ssh ${{ secrets.USERNAME }}@${{ secrets.HOST }} 'bash ~/deploy.sh' [cite: 86]
